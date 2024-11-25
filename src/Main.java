@@ -25,7 +25,8 @@ public class Main {
                         1 - Listar lugares         2 - Adicionar lugar
                         3 - Alterar lugar          4 - Quantidade total de lugares cadastrados
                         5 - Remover lugar          6 - Ver usuários cadastrados
-                        7 - Sair da conta          9 - Finalizar sistema
+                        7 - Apagar usuário         8 - Sair da conta 
+                        9 - Finalizar sistema
                     """);
                 } else {
                     System.out.println("""
@@ -65,6 +66,10 @@ public class Main {
                         break;
 
                     case 7:
+                        handleRemoveUser(sc, usuario);
+                        break;
+
+                    case 8:
                         usuario.setUserLoginStatus(false);
                         System.out.println("Logout realizado!");
                         break;
@@ -94,8 +99,6 @@ public class Main {
         } while (true);
     }
 
-
-
     public static void handleUserLogin (Scanner sc, Usuario usuario) throws SQLException {
         System.out.println("EFETUAR LOGIN");
         sc.nextLine();
@@ -106,6 +109,15 @@ public class Main {
         System.out.print("Senha: ");
         usuario.setUserPassword(sc.nextLine());
         usuario.userLogin();
+    }
+
+    public static void handleRemoveUser(Scanner sc, Usuario usuario) throws SQLException {
+        System.out.println("------------- REMOVER LUGAR -------------");
+        usuario.getUserInformation();
+        System.out.println("Digite o ID do usuário que você deseja remover: ");
+        sc.nextLine();
+        usuario.setUserId(sc.nextInt());
+        usuario.setDeleteUser();
     }
 
     public static void handleRegisterUser (Scanner sc, Usuario usuario) throws SQLException {

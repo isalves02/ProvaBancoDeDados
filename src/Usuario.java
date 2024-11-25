@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Usuario {
+    private int id;
     private String email;
     private String senha;
     private int permissao;
@@ -11,6 +12,7 @@ public class Usuario {
     private boolean hasUserLoggedIn;
 
     public Usuario() {
+        this.id = 0;
         this.email = "";
         this.senha = "";
         this.permissao = 0;
@@ -20,6 +22,10 @@ public class Usuario {
 
     public void setConn(Connection connection) {
         this.conn = connection;
+    }
+
+    public void setUserId(int id) {
+        this.id = id;
     }
 
     public boolean getUserLoginStatus() {
@@ -60,6 +66,19 @@ public class Usuario {
         }
     }
 
+    public void setDeleteUser() throws SQLException {
+        try {
+            String sql = "CALL remover_usuario(?);";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, this.id);
+
+            pstmt.executeUpdate();
+            System.out.println("Usuário excluído com sucesso");
+        } catch (SQLException e) {
+            System.err.println("Erro ao excluir usuário: " + e.getMessage());
+        }
+    }
+
     public void getUserInformation() throws SQLException {
         try {
             String sql = "SELECT * FROM vw_listar_usuarios;";
@@ -69,9 +88,10 @@ public class Usuario {
             if (rs.isBeforeFirst()) {
                 System.out.println("LISTA DE USUÁRIOS");
                 while (rs.next()) {
+                    String id = rs.getString("id_usuario");
                     String mail = rs.getString("email");
                     String permission = rs.getString("tipo");
-                    System.out.printf("E-mail: %-30s \t|\t Tipo de permissão: %-20s%n", mail, permission);
+                    System.out.printf("ID: %-10s\t|\t E-mail: %-30s \t|\t Tipo de permissão: %-20s%n", id, mail, permission);
                 }
             } else {
                 System.out.println("Não há nenhum dado cadastrado ainda!");
