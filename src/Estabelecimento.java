@@ -131,9 +131,8 @@ public class Estabelecimento {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.isBeforeFirst()) {
-                System.out.println("--------------------------------------------------------------------------------------------");
-                System.out.println("Lista de estabelecimentos");
-                System.out.println("--------------------------------------------------------------------------------------------");
+                System.out.println("LISTA DE LUGARES");
+                System.out.printf("%-10s | %-25s | %-25s | %-25s | %-25s%n", "ID", "Nome", "Instagram", "Endereço", "Tipo");
 
                 while (rs.next()) {
                     int id = rs.getInt("id_estabelecimento");
@@ -141,7 +140,8 @@ public class Estabelecimento {
                     String instagram = rs.getString("instagram");
                     String address = rs.getString("endereco");
                     String type = rs.getString("tipo_estabelecimento");
-                    System.out.printf("ID: %d  | Nome: %s  |  Instagram: %s  |  Endereço: %s  |  Tipo: %s%n", id, name, instagram, address, type);
+
+                    System.out.printf("%-10d | %-25s | %-25s | %-25s | %-25s%n", id, name, instagram, address, type);
                 }
             } else {
                 System.out.println("Não há nenhum dado cadastrado ainda!");

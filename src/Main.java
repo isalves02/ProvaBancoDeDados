@@ -13,37 +13,113 @@ public class Main {
         usuario.setConn(banco.getConnection());
         estabelecimento.setConn(banco.getConnection());
 
-       do {
-            System.out.println("######### REMOTANDO ############");
-            System.out.println("Digite uma opção");
-            System.out.println("1 - Listar lugares \t\t 2- Adicionar lugar \n3 - Remover lugar \t\t 4 - Alterar lugar \n5- Quantidade total de lugares cadastrados \t\t 9 - Sair");
-            op = sc.nextInt();
+        usuario.userLogin();
 
-            switch (op) {
-                case 1:
-                    estabelecimento.getPlacesInformation();
-                    break;
-                case 2:
-                    handleAddPlaces(sc, estabelecimento);
-                    break;
-                case 3:
-                    handleRemovePlaces(sc, estabelecimento);
-                    break;
+        System.out.println("######### REMOTANDO ############");
+        do {
+            if (usuario.getUserLoginStatus()) {
+                System.out.println("ESCOLHA UMA OPÇÃO");
 
-                case 4:
-                    handleUpdatePlaces(sc, estabelecimento);
-                    break;
+                if (usuario.getUserPermission() == 2) {
+                    System.out.println("""
+                        1 - Listar lugares         2 - Adicionar lugar
+                        3 - Alterar lugar          4 - Quantidade total de lugares cadastrados
+                        5 - Remover lugar          6 - Ver usuários cadastrados
+                        7 - Sair da conta          9 - Finalizar sistema
+                    """);
+                } else {
+                    System.out.println("""
+                        1 - Listar lugares         2 - Adicionar lugar
+                        3 - Alterar lugar          4 - Quantidade total de lugares cadastrados
+                        5 - Sair da conta          9 - Finalizar sistema
+                    """);
+                }
+                op = sc.nextInt();
 
-                case 5:
-                    estabelecimento.getQuantityOfPlacesRegistered();
-                    break;
+                switch (op) {
+                    case 1:
+                        estabelecimento.getPlacesInformation();
+                        break;
+                    case 2:
+                        handleAddPlaces(sc, estabelecimento);
+                        break;
+                    case 3:
+                        handleRemovePlaces(sc, estabelecimento);
+                        break;
+                    case 4:
+                        estabelecimento.getQuantityOfPlacesRegistered();
+                        break;
+                    case 5:
+                        if (usuario.getUserPermission() == 2) {
+                            handleUpdatePlaces(sc, estabelecimento);
+                        } else {
+                            usuario.setUserLoginStatus(false);
+                            System.out.println("Logout realizado!");
+                        }
+                        break;
 
-                default:
-                    banco.Desconectar();
-                    System.out.println("Sistema finalizado!");
-                    return;
+                    case 6:
+                        if (usuario.getUserPermission() == 2) {
+                            usuario.getUserInformation();
+                        }
+                        break;
+
+                    case 7:
+                        usuario.setUserLoginStatus(false);
+                        System.out.println("Logout realizado!");
+                        break;
+                    default:
+                        System.out.println("Sistema finalizado!");
+                        banco.Desconectar();
+                        return;
+                }
+            } else {
+                System.out.println("Digite uma opção");
+                System.out.println("1 - Efetuar login \t\t 2- Criar conta \t\t 9 - Finalizar sistema.");
+                op = sc.nextInt();
+
+                switch (op) {
+                    case 1:
+                        handleUserLogin(sc, usuario);
+                        break;
+                    case 2:
+                        handleRegisterUser(sc, usuario);
+                        break;
+                    default:
+                        banco.Desconectar();
+                        System.out.println("Sistema finalizado!");
+                        return;
+                }
             }
-        } while (op!=9);
+        } while (true);
+    }
+
+
+
+    public static void handleUserLogin (Scanner sc, Usuario usuario) throws SQLException {
+        System.out.println("EFETUAR LOGIN");
+        sc.nextLine();
+
+        System.out.print("Email: ");
+        usuario.setUserMail(sc.nextLine());
+
+        System.out.print("Senha: ");
+        usuario.setUserPassword(sc.nextLine());
+        usuario.userLogin();
+    }
+
+    public static void handleRegisterUser (Scanner sc, Usuario usuario) throws SQLException {
+        System.out.println("CRIAR CONTA");
+        sc.nextLine();
+
+        System.out.print("Email: ");
+        usuario.setUserMail(sc.nextLine());
+
+        System.out.print("Senha: ");
+        usuario.setUserPassword(sc.nextLine());
+
+        usuario.setUserPermission(1);
+        usuario.setUser();
     }
 
     public static void handleAddPlaces(Scanner sc, Estabelecimento estabelecimento) throws SQLException {
